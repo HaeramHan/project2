@@ -85,6 +85,8 @@ ggplot()+geom_point(aes(x=1:10,y=sil_width))+geom_path(aes(x=1:10,y=sil_width))+
 
 VA_pam <- VA_dat %>% pam(k=2)
 plot(VA_pam, which= 2)
+VA_pam$medoids
+
 VA %>% slice(VA_pam$id.med)
 library(GGally)
 VA <- VA %>% mutate(cluster=as.factor(VA_pam$clustering))
@@ -93,7 +95,8 @@ ggpairs(VA, cols= 1:6, aes(color=cluster))
 ```
 
 Discussion of clustering here
-    
+The highest maximum average silhouette width was cluster two as seen in the the silhouette plot. The silhouette width average was 0.66 meaning it has a reasonable cluster solution. Between the two clusters, it seems like each cluster has the same Karn value meaning that the patients in these clusters have similar functional values. Usually the higher the Karn value, the better so these patients have a mediocre average value.
+In the ggpair plot there are only a few significant positive correlation which are prior and diag.time and Karn and stime. This means that if there is a prior treatment the higher diagnosis time there is. Also, stime and Karn means that the more survival time a patient has the higher Karn value they have. This may make sense because the more you live from the treatment the healthier life you'll most likely live. Stime and Karn had a correlation value of 0.362. Prior and diag.time had a correlation value of 0.418 The highest two negative correlations were age and Karn and age and stime. Age and Karn has a value of -0.096 which also makes sense because the older one gets, the less functional value one has. Age and stime have a value of -0.068 meaning that the older one gets the less survival time. 
     
 ### Dimensionality Reduction with PCA
 
@@ -128,7 +131,8 @@ VA_dat %>% as.data.frame %>% dplyr::select(age) %>% mutate(PC1=pca1$scores[,1],
 ```
 
 Discussions of PCA here. 
-
+There are only 3 PCs which explain 85% of the total variance. PC1 has a high magnitude and sign for stime and Karn meaning that these individuals have a higher survival time and a higher functional value/Karn value. The negative for age indicates these individuals are on the lower end of the age spectrum. PC2 who that all the signs are positive meaning that individuals in this will have a higher stime, higher age and higher Karn but, these individuals do not have as high stime and Karn as PC1. PC3 individuals have a higher stime but a lower Karn functional value. 
+The ggplot shows that as PC1 increases age does not really affect PC1. However, as PC2 increases so does the age. This shows there is a correlation between PC2 scores and age. 
 ###  Linear Classifier
 
 ```{R}
@@ -171,7 +175,8 @@ summarize_all(diags,mean)
 ```
 
 Discussion here
-
+The logistic fit had an AUC of 0.55 meaning that this model is poor. So this means that treatment is a poor in distinguishing between the classes of stime, age, Karn and diag.time. However after doing the cross validation the AUC decreased to 0.54673 meaning that the model is still poor and that what treatment the patient received is not a good distinguishing factor between the classes. Since the model has a small gap between the AUC this means that there isn't much overfitting but rather underfitting.
+For the confusion matrix, 0.4928 or 49.28% of the patients actually had a standard treatment while 0.5072 or 50.72% didn't have the standard treatment. The true positive rate(TPR) is 0.4928 and the the false negative rate(FNR) is 0.5072 so this model is more likely to give a false negative for standard. For test 0.5441 is the TPR and the FNR is 0.4559 meaning that this model is more likely classify patients that did the test treatment better than the standard treatment. 
 ### Non-Parametric Classifier
 
 ```{R}
@@ -215,8 +220,7 @@ summarize_all(diags,mean)
 ```
 
 Discussion
-
-
+For the non parametric classifier the AUC without cross validation shows has a value of 0.728 meaning this model is pretty fair. However, after cross validation the AUC had a value of 0.705. This gap is somewhat small meaning there is some underfitting happening. Overall this model is better at predicting new observations than the linear classification. This model had an AUC value of 0.70 meaning that this model is fair. 
 ### Regression/Numeric Prediction
 
 ```{R}
@@ -246,28 +250,32 @@ mean(diags)
 ```
 
 Discussion
-
+The mean MSE or Mean squared error for the overall data is 105.0733 however the average MSE for the k testing fold is 109.1678. The MSE is really high meaning there is a high prediction error involved for this data set. The CV is higher than the MSE meaning that there is underfitting which is consistent with the previous cross validation.  
 ### Python 
 
 ```{R}
 library(reticulate)
-library(tidyverse)
 use_python("/usr/bin/python3", required = F)
 
 VA %>% group_by(cell) %>% summarize(mean(Karn)) -> mean_KC
+py$Age_mean
+
 ```
 
 ```{python}
 # python code here
+r.mean_KC
 
+import numpy as np
+VA= r.VA
+np.mean(VA["age"])
+
+Age_mean = np.mean(VA["age"])
 ```
 
 Discussion
-
+This part was to use the library reticulate to communicate between python and R. In the R chunk, I created the variable mean_KC which is the mean KARN score based on cell type and in the python chunk I was able to show this data in the python chunk using r.mean_KC. In the Python chunk I had to import numpy library to get the mean of age for the VA dataset. Using the np.mean function in python I was able to create a variable and use this variable in the R code chunk by py$Age_mean.
 ### Concluding Remarks
 
 Include concluding remarks here, if any
-
-
-
-
+I absolutely loved this class, although it was super frustrating when the code was not working at the end, when everything works, it is EXTREMELY satisfying.
