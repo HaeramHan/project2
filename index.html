@@ -1724,9 +1724,9 @@ y_hat &lt;- factor(y_hat, levels = c(&quot;standard&quot;, &quot;test&quot;))
 table(actual = y, predicted = y_hat) %&gt;% addmargins()</code></pre>
 <pre><code>##           predicted
 ## actual     standard test Sum
-##   standard       39   30  69
-##   test           24   44  68
-##   Sum            63   74 137</code></pre>
+##   standard       29   40  69
+##   test           40   28  68
+##   Sum            69   68 137</code></pre>
 <pre class="r"><code># cross-validation of linear classifier here
 set.seed(322)
 k = 10
@@ -1852,9 +1852,7 @@ mean(diags)</code></pre>
 <pre class="r"><code>library(reticulate)
 use_python(&quot;/usr/bin/python3&quot;, required = F)
 
-mean_KC &lt;- VA %&gt;% group_by(cell) %&gt;% summarize(mean(Karn))
-py$Age_mean</code></pre>
-<pre><code>## NULL</code></pre>
+mean_KC &lt;- VA %&gt;% group_by(cell) %&gt;% summarize(mean(Karn))</code></pre>
 <pre class="python"><code># python code here
 r.mean_KC</code></pre>
 <pre><code>## {&#39;cell&#39;: [&#39;1&#39;, &#39;2&#39;, &#39;3&#39;, &#39;4&#39;], &#39;mean(Karn)&#39;: [60.857142857142854, 53.541666666666664, 58.111111111111114, 65.0]}</code></pre>
@@ -1863,6 +1861,8 @@ VA= r.VA
 np.mean(VA[&quot;age&quot;])</code></pre>
 <pre><code>## 58.306569343065696</code></pre>
 <pre class="python"><code>Age_mean = np.mean(VA[&quot;age&quot;])</code></pre>
+<pre class="r"><code>py$Age_mean</code></pre>
+<pre><code>## [1] 58.30657</code></pre>
 <p>Discussion This part was to use the library reticulate to communicate between python and R. In the R chunk, I created the variable mean_KC which is the mean KARN score based on cell type and in the python chunk I was able to show this data in the python chunk using r.mean_KC. In the Python chunk I had to import numpy library to get the mean of age for the VA dataset. Using the np.mean function in python I was able to create a variable and use this variable in the R code chunk by py$Age_mean. ### Concluding Remarks</p>
 <p>Include concluding remarks here, if any I absolutely loved this class, although it was super frustrating when the code was not working at the end, when everything works, it is EXTREMELY satisfying.</p>
 </div>

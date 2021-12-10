@@ -258,7 +258,7 @@ library(reticulate)
 use_python("/usr/bin/python3", required = F)
 
 VA %>% group_by(cell) %>% summarize(mean(Karn)) -> mean_KC
-py$Age_mean
+
 
 ```
 
@@ -269,8 +269,13 @@ r.mean_KC
 import numpy as np
 VA= r.VA
 np.mean(VA["age"])
-
 Age_mean = np.mean(VA["age"])
+
+```
+
+
+```{R}
+py$Age_mean
 ```
 
 Discussion
